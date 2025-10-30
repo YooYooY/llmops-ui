@@ -11,7 +11,7 @@ const getDebug = async () => {
   console.log("result=>", result)
 };
 
-getDebug()
+// getDebug()
 </script>
 
 <template>home</template>

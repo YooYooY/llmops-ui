@@ -1,4 +1,6 @@
-import { API_PREFIX } from '@/config'
+import { API_PREFIX, httpCode } from '@/config'
+import type { BaseResponse } from '@/models/base'
+import { Message } from '@arco-design/web-vue'
 
 const TIMEOUT = 100 * 1000
 
@@ -49,7 +51,12 @@ const baseFetch = async <T>(url: string, fetchOptions: FetchOptions): Promise<T>
     const res = await fetch(urlWithPrefix, options as RequestInit)
     clearTimeout(id)
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return (await res.json()) as T;
+    const result: BaseResponse<unknown> = await res.json();
+    if (result.code !== httpCode.success) {
+      Message.error(result.message)
+      throw new Error(result.message);
+    }
+    return (result.data) as T;
   } catch (err) {
     if ((err as Error).name === 'AbortError') {
       throw new Error('Request Timeout');
