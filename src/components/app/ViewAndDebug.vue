@@ -7,14 +7,14 @@
         <span>long memories</span>
       </button>
     </header>
-    <section class="flex-1">
-      <!-- empty chat message -->
+    <section class="flex-1 overflow-y-scroll overflow-x-hidden" ref="message-warp">
+    
       <div v-if="messages.length === 0" class="text-center pt-48 space-y-2">
         <a-avatar :size="70" shape="square">A</a-avatar>
         <p class="text-gray-900 text-3xl font-bold">Chat bot</p>
       </div>
 
-      <!-- chat messages -->
+
       <div v-else class="space-y-6 px-6 py-7">
         <chat-message
           v-for="(message, index) in messages"
@@ -22,8 +22,9 @@
           :role="message.role"
           :content="message.content"
         />
-        <!-- loading -->
+
         <ai-message v-if="isLoading" :is-loading="true" />
+        
       </div>
     </section>
 
@@ -44,8 +45,8 @@
           <a-button class="mr-5 shrink-0" type="text" shape="circle">
             <icon-plus-circle class="text-base" />
           </a-button>
-          <a-button class="mr-5 shrink-0" type="text" shape="circle" @click="sendMessage">
-            <icon-send class="text-base" />
+          <a-button class="mr-5 shrink-0" type="text" shape="circle" @click="sendMessage" :disabled="isLoading">
+            <icon-send class="text-base -rotate-45" />
           </a-button>
         </div>
       </div>
@@ -57,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, useTemplateRef, watch } from "vue";
 import { useRoute } from "vue-router";
 import { Message } from "@arco-design/web-vue";
 import ChatMessage from "./ChatMessage.vue";
@@ -73,6 +74,7 @@ const messages = ref<Message[]>([]);
 const query = ref<string>("");
 const isLoading = ref(false);
 const route = useRoute();
+const messageWarp = useTemplateRef("message-warp");
 
 const sendMessage = async () => {
   if (!query.value) {
@@ -107,6 +109,16 @@ const sendMessage = async () => {
     isLoading.value = false;
   }
 };
+
+const scrollMessageToBottom = ()=>{
+  if(!messageWarp.value) return;
+  messageWarp.value.scrollTop = messageWarp.value.scrollHeight
+}
+
+watch([messages, isLoading], scrollMessageToBottom, {
+  deep: true,
+  flush: 'post'
+})
 
 const clearMessages = () => {
   messages.value = [];

@@ -1,7 +1,7 @@
 <template>
   <div class="w-screen h-screen flex flex-col ">
     <header class="w-full h-[74px] shrink-0">header</header>
-    <main class="w-full flex-1 flex">
+    <main class="w-full flex-1 flex min-h-0">
       <div class="app-arrangement">
         <div class="app-arrange-header">application arrangement</div>
         <div class="w-full flex flex-1">

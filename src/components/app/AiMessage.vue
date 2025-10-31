@@ -8,7 +8,7 @@
       <p class="bg-gray-100 px-4 py-3 text-gray-900 rounded-2xl max-w-max">
         <template v-if="!isLoading">{{ content }}</template>
         <template v-else>
-          <icon-loading class="text-base" />
+          <icon-loading class="text-base -rotate-45" />
         </template>
       </p>
     </div>
